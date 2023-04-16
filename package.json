@@ -7,7 +7,8 @@
   "scripts": {
     "start": "node ./dist/bin/www.js",
     "build": "rm -rf /dist && tsc -p .",
-    "dev": "nodemon ./src/bin/www.ts -e ts,json,pug,css"
+    "dev": "nodemon ./src/bin/www.ts -e ts,json,pug,css",
+    "serverstart": "SET DEBUG=express-locallibrary-tutorial:* & npm run dev"
   },
   "keywords": [],
   "author": "",
