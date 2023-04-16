@@ -18,6 +18,7 @@ const BookInstanceSchema = new Schema({
   },
 });
 
+// Virtuals for bookInstance's URL
 BookInstanceSchema.virtual("url").get(function () {
   return `/catalog/bookinstance/${this._id}`;
 });
@@ -27,7 +28,7 @@ BookInstanceSchema.virtual("url").get(function () {
  ** so we can always point to the right "This". **************
  *************************************************************/
 const BookInstanceModel = mongoose.model(
-  "Author",
+  "BookInstance",
   BookInstanceSchema
 );
 

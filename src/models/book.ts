@@ -23,6 +23,6 @@ BooksSchema.virtual("url").get(function () {
  ** Arrow function is not used as callback in get method above
  ** so we can always point to the right "This". **************
  *************************************************************/
-const BookModel = mongoose.model("Author", BooksSchema);
+const BookModel = mongoose.model("Book", BooksSchema);
 
 export default BookModel;
