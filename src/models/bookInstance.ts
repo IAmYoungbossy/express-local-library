@@ -1,6 +1,15 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
-const Schema = mongoose.Schema;
+export interface IBookInstance {
+  due_back: Date;
+  status: string;
+  imprint: string;
+  book: Schema.Types.ObjectId;
+}
+
+export interface IBookInstanceModel
+  extends IBookInstance,
+    Document {}
 
 const BookInstanceSchema = new Schema({
   book: {
@@ -27,9 +36,8 @@ BookInstanceSchema.virtual("url").get(function () {
  ** Arrow function is not used as callback in get method above
  ** so we can always point to the right "This". **************
  *************************************************************/
-const BookInstanceModel = mongoose.model(
+
+export const BookInstance = mongoose.model<IBookInstanceModel>(
   "BookInstance",
   BookInstanceSchema
 );
-
-export default BookInstanceModel;

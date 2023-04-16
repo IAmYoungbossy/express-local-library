@@ -1,6 +1,13 @@
-import mongoose from "mongoose";
+import mongoose, { Document, Schema } from "mongoose";
 
-const Schema = mongoose.Schema;
+export interface IAuthor {
+  first_name: string;
+  date_of_birth: Date;
+  family_name: string;
+  date_of_death: Date;
+}
+
+export interface IAuthorModel extends IAuthor, Document {}
 
 // Structure of data to be stored in author collection
 const AuthorSchema = new Schema({
@@ -27,6 +34,8 @@ AuthorSchema.virtual("url").get(function () {
  ** Arrow function is not used as callback in get method above
  ** so we can always point to the right "This". **************
  *************************************************************/
-const AuthorModel = mongoose.model("Author", AuthorSchema);
 
-export default AuthorModel;
+export const Author = mongoose.model<IAuthorModel>(
+  "Author",
+  AuthorSchema
+);

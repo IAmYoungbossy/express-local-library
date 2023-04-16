@@ -1,6 +1,12 @@
-import mongoose from "mongoose";
+import mongoose, { Document } from "mongoose";
 
 const Schema = mongoose.Schema;
+
+export interface IGenre {
+  name: string;
+}
+
+export interface IGenreModel extends IGenre, Document {}
 
 const GenreSchema = new Schema({
   name: { type: String, minLength: 3, maxLength: 100 },
@@ -15,6 +21,8 @@ GenreSchema.virtual("url").get(function () {
  ** Arrow function is not used as callback in get method above
  ** so we can always point to the right "This". **************
  *************************************************************/
-const GenreModel = mongoose.model("Genre", GenreSchema);
 
-export default GenreModel;
+export const Genre = mongoose.model<IGenreModel>(
+  "Genre",
+  GenreSchema
+);
