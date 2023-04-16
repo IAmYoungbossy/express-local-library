@@ -7,7 +7,7 @@
   "scripts": {
     "start": "node ./dist/bin/www.js",
     "build": "rm -rf /dist && tsc -p .",
-    "dev": "nodemon ./src/bin/www.ts"
+    "dev": "nodemon ./src/bin/www.ts -e ts,json,pug,css"
   },
   "keywords": [],
   "author": "",
