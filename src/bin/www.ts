@@ -1,40 +1,29 @@
 #!/usr/bin/env node
 
-/**
- * Module dependencies.
- */
-
+// Module dependencies.
 import http from "http";
 import app from "../app";
 import debug from "debug";
+import conectToDb from "../connectToDb/connectToDb";
 
 const debugInstance = debug("src:server");
 
-/**
- * Get port from environment and store in Express.
- */
-
+// Get port from environment and store in Express.
 const port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
 
-/**
- * Create HTTP server.
- */
-
+// Create HTTP server.
 const server = http.createServer(app);
 
-/**
- * Listen on provided port, on all network interfaces.
- */
+/********************************************************************
+ ** Waits for database to connect, if seccussful, listens for request
+ ** or logs an error if there is a problem **************************
+ ********************************************************************/
+conectToDb({ port, server, onError, onListening }).catch((err) =>
+  console.log(err)
+);
 
-server.listen(port, () => console.log("Listening for request"));
-server.on("error", onError);
-server.on("listening", onListening);
-
-/**
- * Normalize a port into a number, string, or false.
- */
-
+// Normalize a port into a number, string, or false.
 function normalizePort(val: string) {
   const port = parseInt(val, 10);
 
@@ -51,11 +40,8 @@ function normalizePort(val: string) {
   return false;
 }
 
-/**
- * Event listener for HTTP server "error" event.
- */
-
-interface CustomError extends Error {
+// Event listener for HTTP server "error" event.
+export interface CustomError extends Error {
   syscall: string;
   code: string;
 }
@@ -81,10 +67,7 @@ function onError(error: CustomError) {
   }
 }
 
-/**
- * Event listener for HTTP server "listening" event.
- */
-
+// Event listener for HTTP server "listening" event.
 function onListening() {
   const addr = server.address();
   const bind =
