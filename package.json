@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./dist/bin/www.js",
-    "build": "rm -rf /dist && tsc -p .",
+    "build": "rm -rf /dist && tsc -p . && node minify.js",
     "dev": "nodemon ./src/bin/www.ts -e ts,json,pug,css",
     "serverstart": "SET DEBUG=express-locallibrary-tutorial:* & npm run dev"
   },
@@ -32,6 +32,7 @@
     "@types/pug": "^2.0.6",
     "nodemon": "^2.0.22",
     "ts-node": "^10.9.1",
-    "typescript": "^5.0.4"
+    "typescript": "^5.0.4",
+    "uglify-js": "^3.17.4"
   }
 }
