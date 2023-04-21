@@ -17,7 +17,10 @@ const AuthorSchema = new Schema({
   family_name: { type: String, required: true, maxLength: 100 },
 });
 
-// virtual for author's full name
+/*************************************************************
+ ** Arrow function is not used as callback in get method below
+ ** so we can always point to the right "This". **************
+ *************************************************************/
 AuthorSchema.virtual("name").get(function () {
   let fullname: string = "";
   if (this.first_name && this.family_name)
@@ -29,11 +32,6 @@ AuthorSchema.virtual("name").get(function () {
 AuthorSchema.virtual("url").get(function () {
   return `/catalog/author/${this._id}`;
 });
-
-/*************************************************************
- ** Arrow function is not used as callback in get method above
- ** so we can always point to the right "This". **************
- *************************************************************/
 
 export const Author = mongoose.model<IAuthorModel>(
   "Author",

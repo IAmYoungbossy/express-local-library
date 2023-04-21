@@ -22,15 +22,13 @@ const BooksSchema = new Schema({
   genre: [{ type: Schema.Types.ObjectId, ref: "Genre" }],
 });
 
-// Virtuals for book's URL
+/*************************************************************
+ ** Arrow function is not used as callback in get method below
+ ** so we can always point to the right "This". **************
+ *************************************************************/
 BooksSchema.virtual("url").get(function () {
   return `/catalog/book/${this._id}`;
 });
-
-/*************************************************************
- ** Arrow function is not used as callback in get method above
- ** so we can always point to the right "This". **************
- *************************************************************/
 
 export const Book = mongoose.model<IBookModel>(
   "Book",
