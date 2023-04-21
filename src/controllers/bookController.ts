@@ -1,10 +1,39 @@
-import { Book } from "../models/book";
 import asyncHandler from "express-async-handler";
+import { body, validationResult } from "express-validator";
 import { Response, Request, NextFunction } from "express";
+
+import { Book } from "../models/book";
+import { Genre } from "../models/genre";
+import { Author } from "../models/author";
+import { BookInstance } from "../models/bookInstance";
 
 const index = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    res.send("NOT IMPLEMENTED: Site Home Page");
+    // Get details of books, book instances, authors and genre counts (in parallel)
+    const [
+      numBooks,
+      numGenres,
+      numAuthors,
+      numBookInstances,
+      numAvailableBookInstances,
+    ] = await Promise.all([
+      Book.countDocuments({}).exec(),
+      Genre.countDocuments({}).exec(),
+      Author.countDocuments({}).exec(),
+      BookInstance.countDocuments({}).exec(),
+      BookInstance.countDocuments({
+        status: "Available",
+      }).exec(),
+    ]);
+
+    res.render("index", {
+      book_count: numBooks,
+      genre_count: numGenres,
+      author_count: numAuthors,
+      title: "Local Library Home",
+      book_instance_count: numBookInstances,
+      book_instance_available_count: numAvailableBookInstances,
+    });
   }
 );
 
