@@ -5,7 +5,13 @@ import { Response, Request, NextFunction } from "express";
 // Displays list of all Authors.
 const author_list = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    res.send("NOT IMPLEMENTED: Author list");
+    const allAuthors = await Author.find()
+      .sort({ family_name: 1 })
+      .exec();
+    res.render("author_list", {
+      title: "Author List",
+      author_list: allAuthors,
+    });
   }
 );
 
