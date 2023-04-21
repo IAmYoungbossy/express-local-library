@@ -5,7 +5,11 @@ import { Response, Request, NextFunction } from "express";
 // Displays list of all Genre.
 const genre_list = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    res.send("NOT IMPLEMENTED: Genre list");
+    const allGenre = await Genre.find().sort({ name: 1 }).exec();
+    res.render("genre_list", {
+      title: "Genre List",
+      genre_list: allGenre,
+    });
   }
 );
 

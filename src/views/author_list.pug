@@ -8,10 +8,10 @@ block content
       li
         a(href=author.url) #{author.name} 
         if author.date_of_birth && author.date_of_death
-            | (#{author.date_of_birth_formatted} - #{author.date_of_death_formatted})
+          | (#{author.date_of_birth_formatted} - #{author.date_of_death_formatted})
         if !author.date_of_birth && !author.date_of_death
-            |
+          |
         if author.date_of_birth && !author.date_of_death
-            | #{author.date_of_birth_formatted}
+          | #{author.date_of_birth_formatted}
     else
       li There are no authors.
