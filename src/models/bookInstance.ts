@@ -1,3 +1,4 @@
+import { DateTime } from "luxon";
 import mongoose, { Schema, Document } from "mongoose";
 
 export interface IBookInstance {
@@ -34,6 +35,14 @@ const BookInstanceSchema = new Schema({
 BookInstanceSchema.virtual("url").get(function () {
   return `/catalog/bookinstance/${this._id}`;
 });
+
+BookInstanceSchema.virtual("due_back_formatted").get(
+  function () {
+    return DateTime.fromJSDate(this.due_back).toLocaleString(
+      DateTime.DATE_MED
+    );
+  }
+);
 
 export const BookInstance = mongoose.model<IBookInstanceModel>(
   "BookInstance",
