@@ -2,6 +2,7 @@ import { DateTime } from "luxon";
 import mongoose, { Document, Schema } from "mongoose";
 
 export interface IAuthor {
+  lifespan: string;
   first_name: string;
   date_of_birth: Date;
   family_name: string;
@@ -48,6 +49,20 @@ AuthorSchema.virtual("date_of_death_formatted").get(function () {
         DateTime.DATE_MED
       )
     : "";
+});
+
+AuthorSchema.virtual("lifespan").get(function () {
+  if (this.date_of_birth && this.date_of_death) {
+    return `${DateTime.fromJSDate(
+      this.date_of_birth
+    ).toLocaleString(DateTime.DATE_MED)} - ${DateTime.fromJSDate(
+      this.date_of_death
+    ).toLocaleString(DateTime.DATE_MED)}`;
+  } else if (this.date_of_birth && !this.date_of_death) {
+    return `${DateTime.fromJSDate(
+      this.date_of_birth
+    ).toLocaleString(DateTime.DATE_MED)}`;
+  } else return "";
 });
 
 export const Author = mongoose.model<IAuthorModel>(
