@@ -14,7 +14,7 @@ const genre_list = asyncHandler(
   }
 );
 
-interface CustomErr extends Error {
+export interface CustomErr extends Error {
   status: number;
 }
 

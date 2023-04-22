@@ -5,6 +5,7 @@ import { Response, Request, NextFunction } from "express";
 import { Book } from "../models/book";
 import { Genre } from "../models/genre";
 import { Author } from "../models/author";
+import { CustomErr } from "./genreController";
 import { BookInstance } from "../models/bookInstance";
 
 const index = asyncHandler(
@@ -55,7 +56,27 @@ const book_list = asyncHandler(
 // Displays detail page for a specific book.
 const book_detail = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    res.send(`NOT IMPLEMENTED: Book detail: ${req.params.id}`);
+    // Get details of books, book instances for specific book
+    const [book, bookInstances] = await Promise.all([
+      Book.findById(req.params.id)
+        .populate("author")
+        .populate("genre")
+        .exec(),
+      BookInstance.find({ book: req.params.id }).exec(),
+    ]);
+
+    if (book === null) {
+      // No results.
+      const err = new Error("Book not found") as CustomErr;
+      err.status = 404;
+      return next(err);
+    }
+
+    res.render("book_detail", {
+      title: book.title,
+      book: book,
+      book_instances: bookInstances,
+    });
   }
 );
 
