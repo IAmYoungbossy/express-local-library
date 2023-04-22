@@ -1,5 +1,7 @@
-import asyncHandler from "express-async-handler";
+import { CustomErr } from "./genreController";
 import { BookInstance } from "../models/bookInstance";
+
+import asyncHandler from "express-async-handler";
 import { Response, Request, NextFunction } from "express";
 
 // Displays list of all BookInstances.
@@ -19,9 +21,23 @@ const bookinstance_list = asyncHandler(
 // Displays detail page for a specific BookInstance.
 const bookinstance_detail = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    res.send(
-      `NOT IMPLEMENTED: BookInstance detail: ${req.params.id}`
-    );
+    const bookInstance = await BookInstance.findById(
+      req.params.id
+    )
+      .populate("book")
+      .exec();
+
+    if (bookInstance === null) {
+      // No results.
+      const err = new Error("Book copy not found") as CustomErr;
+      err.status = 404;
+      return next(err);
+    }
+
+    res.render("bookinstance_detail", {
+      title: "Book:",
+      bookinstance: bookInstance,
+    });
   }
 );
 
