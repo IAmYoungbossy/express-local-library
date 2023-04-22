@@ -1,4 +1,7 @@
+import { Book } from "../models/book";
 import { Author } from "../models/author";
+import { CustomErr } from "./genreController";
+
 import asyncHandler from "express-async-handler";
 import { Response, Request, NextFunction } from "express";
 
@@ -18,7 +21,27 @@ const author_list = asyncHandler(
 // Displays detail page for a specific Author.
 const author_detail = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    res.send(`NOT IMPLEMENTED: Author detail: ${req.params.id}`);
+    // Get details of author and all their books (in parallel)
+    const [author, allBooksByAuthor] = await Promise.all([
+      Author.findById(req.params.id).exec(),
+      Book.find(
+        { author: req.params.id },
+        "title summary"
+      ).exec(),
+    ]);
+
+    if (author === null) {
+      // No results.
+      const err = new Error("Author not found") as CustomErr;
+      err.status = 404;
+      return next(err);
+    }
+
+    res.render("author_detail", {
+      title: "Author Detail",
+      author: author,
+      author_books: allBooksByAuthor,
+    });
   }
 );
 
