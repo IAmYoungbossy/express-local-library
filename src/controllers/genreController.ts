@@ -1,3 +1,4 @@
+import { Book } from "../models/book";
 import { Genre } from "../models/genre";
 import asyncHandler from "express-async-handler";
 import { Response, Request, NextFunction } from "express";
@@ -13,10 +14,33 @@ const genre_list = asyncHandler(
   }
 );
 
+interface CustomErr extends Error {
+  status: number;
+}
+
 // Displays detail page for a specific Genre.
 const genre_detail = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    res.send(`NOT IMPLEMENTED: Genre detail: ${req.params.id}`);
+    // Get details of genre and all associated books (in parallel)
+    const [genre, booksInGenre] = await Promise.all([
+      Genre.findById(req.params.id).exec(),
+      Book.find(
+        { genre: req.params.id },
+        "title summary"
+      ).exec(),
+    ]);
+    if (genre === null) {
+      // No results.
+      const err = new Error("Genre not found") as CustomErr;
+      err.status = 404;
+      return next(err);
+    }
+
+    res.render("genre_detail", {
+      title: "Genre Detail",
+      genre: genre,
+      genre_books: booksInGenre,
+    });
   }
 );
 
