@@ -1,4 +1,16 @@
-import { ErrorRequestHandler } from "express";
+import {
+  Request,
+  Response,
+  NextFunction,
+  ErrorRequestHandler,
+} from "express";
+import createHttpError from "http-errors";
+
+export const catchErrorAndForward = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => next(createHttpError(404));
 
 const errorHandler = ((err, req, res, next) => {
   // set locals, only providing error in development
