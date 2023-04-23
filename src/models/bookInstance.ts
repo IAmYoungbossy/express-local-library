@@ -1,11 +1,17 @@
 import { DateTime } from "luxon";
 import mongoose, { Schema, Document } from "mongoose";
 
+type bookIdType = {
+  _id: Schema.Types.ObjectId;
+};
+type bookType = Schema.Types.ObjectId & bookIdType;
+
 export interface IBookInstance {
+  url: string;
   due_back: Date;
   status: string;
+  book: bookType;
   imprint: string;
-  book: Schema.Types.ObjectId;
 }
 
 export interface IBookInstanceModel
