@@ -3,6 +3,7 @@ import mongoose, { Document } from "mongoose";
 const Schema = mongoose.Schema;
 
 export interface IGenre {
+  url: string;
   name: string;
 }
 

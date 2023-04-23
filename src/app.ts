@@ -16,12 +16,14 @@ const app = express();
 app.set("views", path.resolve("src", "views"));
 app.set("view engine", "pug");
 
+// Middleware
 app.use(logger("dev"));
 app.use(express.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.resolve("src", "public")));
 
+// Routes
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/catalog", catalogRouter);
