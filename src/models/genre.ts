@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 export interface IGenre {
   url: string;
   name: string;
+  checked?: string;
 }
 
 export interface IGenreModel extends IGenre, Document {}

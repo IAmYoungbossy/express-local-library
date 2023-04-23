@@ -1,11 +1,12 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 export interface IBook {
+  url: string;
   isbn: string;
   title: string;
   summary: string;
-  genre: Schema.Types.ObjectId;
   author: Schema.Types.ObjectId;
+  genre: mongoose.Types.ObjectId[];
 }
 
 export interface IBookModel extends IBook, Document {}

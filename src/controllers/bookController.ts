@@ -1,12 +1,12 @@
-import asyncHandler from "express-async-handler";
-import { body, validationResult } from "express-validator";
-import { Response, Request, NextFunction } from "express";
-
 import { Book } from "../models/book";
 import { Genre } from "../models/genre";
 import { Author } from "../models/author";
 import { CustomErr } from "./genreController";
 import { BookInstance } from "../models/bookInstance";
+
+import asyncHandler from "express-async-handler";
+import { Response, Request, NextFunction } from "express";
+import { body, validationResult } from "express-validator";
 
 const index = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -83,16 +83,94 @@ const book_detail = asyncHandler(
 // Displays book create form on GET.
 const book_create_get = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    res.send("NOT IMPLEMENTED: Book create GET");
+    // Get all authors and genres, which we can use for adding to our book.
+    const list = [Author.find().exec(), Genre.find().exec()];
+    const [allAuthors, allGenres] = await Promise.all(list);
+
+    const genres = allGenres;
+    const authors = allAuthors;
+    const title = "Create Book";
+
+    res.render("book_form", { title, authors, genres });
   }
 );
 
 // Handles book create on POST.
-const book_create_post = asyncHandler(
-  async (req: Request, res: Response, next: NextFunction) => {
-    res.send("NOT IMPLEMENTED: Book create POST");
-  }
-);
+const book_create_post = [
+  // Convert the genre to an array.
+  (req: Request, res: Response, next: NextFunction) => {
+    if (!(req.body.genre instanceof Array)) {
+      if (typeof req.body.genre === "undefined")
+        req.body.genre = [];
+      else req.body.genre = new Array(req.body.genre);
+    }
+    next();
+  },
+
+  // Validate and sanitize fields.
+  body("title", "Title must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("author", "Author must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("summary", "Summary must not be empty.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("isbn", "ISBN must not be empty")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("genre.*").escape(),
+
+  // Process request after validation and sanitization.
+  asyncHandler(async (req, res, next) => {
+    // Extract the validation errors from a request.
+    const errors = validationResult(req);
+    const { isbn, title, genre, author, summary } = req.body;
+
+    // Create a Book object with escaped and trimmed data.
+    const book = new Book({
+      isbn,
+      title,
+      genre,
+      author,
+      summary,
+    });
+
+    /****************************************************
+     ** If errors. Render the form again with sanitized *
+     ** values/error messages. **************************/
+    if (!errors.isEmpty()) {
+      // Get all authors and genres for form.
+      const [allAuthors, allGenres] = await Promise.all([
+        Author.find().exec(),
+        Genre.find().exec(),
+      ]);
+
+      // Mark our selected genres as checked.
+      for (let genre of allGenres) {
+        if (book.genre.indexOf(genre._id) > -1) {
+          genre.checked = "true";
+        }
+      }
+      res.render("book_form", {
+        book: book,
+        genres: allGenres,
+        authors: allAuthors,
+        title: "Create Book",
+        errors: errors.array(),
+      });
+    } else {
+      // Data from form is valid. Save book.
+      await book.save();
+      res.redirect(book.url);
+    }
+  }),
+];
 
 // Displays book delete form on GET.
 const book_delete_get = asyncHandler(

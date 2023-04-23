@@ -14,7 +14,11 @@ console.log(
 );
 
 // Define Types
-type GenreType = mongoose.Document<unknown, {}, IGenreModel> &
+export type GenreType = mongoose.Document<
+  unknown,
+  {},
+  IGenreModel
+> &
   Omit<
     IGenreModel & {
       _id: mongoose.Types.ObjectId;
