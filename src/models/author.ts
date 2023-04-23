@@ -2,6 +2,7 @@ import { DateTime } from "luxon";
 import mongoose, { Document, Schema } from "mongoose";
 
 export interface IAuthor {
+  url: string;
   lifespan: string;
   first_name: string;
   date_of_birth: Date;
